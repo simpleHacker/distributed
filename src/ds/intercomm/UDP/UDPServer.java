@@ -1,6 +1,8 @@
 package ds.intercomm.UDP;
-import java.net.*;
-import java.io.*;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 
 public class UDPServer {
     public static void main(String args[]) {
@@ -11,7 +13,14 @@ public class UDPServer {
            while(true) {
                DatagramPacket request = new DatagramPacket(buffer, buffer.length);
                aSocket.receive(request);
-               DatagramPacket reply = new DatagramPacket(request.getData(), request.getLength(), request.getAddress(), request.getPort());
+               byte[] m = request.getData();
+               byte[] mm = new byte[m.length-1];
+               System.arraycopy(m ,1, mm, 0, mm.length);
+               // report any message missing!
+               if(m[0] != 0)
+                   System.err.println("Request from "+ request.getAddress() + " at port " + request.getPort() + " loss messages before " + m[0]);
+               System.out.println("Request from "+ request.getAddress() + " at port " + request.getPort() + " message " + m[0]);
+               DatagramPacket reply = new DatagramPacket(mm, request.getLength() - 1, request.getAddress(), request.getPort());
                aSocket.send(reply);
            }
        } catch(SocketException e) {
