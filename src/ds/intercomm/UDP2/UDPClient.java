@@ -49,10 +49,7 @@ public class UDPClient {
                             System.err.println("Still not get reply, request failed!");
                             break;
                         }
-                        mm[0] += 1;
-                        DatagramPacket new_request = 
-                                new DatagramPacket(mm, mess.length()+1, aHost, serverPort);
-                        aSocket.send(new_request);
+                        //handle the duplicate message at server side
                     }
                 System.out.println("Reply: " + reply.getLength() + ":" + new String(reply.getData()));
             }
